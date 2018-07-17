@@ -4,6 +4,7 @@ view: warehouse_metering_history {
   dimension: credits_used {
     type: number
     sql: ${TABLE}."CREDITS_USED" ;;
+    alias: [credits]
   }
 
   dimension_group: end {
@@ -32,16 +33,47 @@ view: warehouse_metering_history {
       year
     ]
     sql: ${TABLE}."START_TIME" ;;
+    alias: [read_hour]
   }
 
-  dimension: warehouse_id {
-    type: number
-    sql: ${TABLE}."WAREHOUSE_ID" ;;
-  }
+  #dimension: warehouse_id {
+  #  type: number
+  #  sql: ${TABLE}."WAREHOUSE_ID" ;;
+  #}
 
   dimension: warehouse_name {
     type: string
     sql: ${TABLE}."WAREHOUSE_NAME" ;;
+  }
+
+  dimension: is_prior_month_mtd {
+    type: yesno
+    sql:  EXTRACT(month, ${start_raw}) = EXTRACT(month, current_timestamp()) - 1
+      and ${start_raw} <= dateadd(month, -1, current_timestamp())  ;;
+  }
+
+  measure: average_credits_used {
+    type: average
+    sql:  ${credits_used} ;;
+  }
+
+  measure: total_credits_used {
+    type: sum
+    sql: ${credits_used} ;;
+  }
+
+  measure: current_mtd_credits_used {
+    type: sum
+    sql:  ${credits_used} ;;
+    filters: {field: start_date value: "this month"}
+    value_format: "$0.000,\" K\""
+  }
+
+  measure: prior_mtd_credits_used {
+    type: sum
+    sql:  ${credits_used} ;;
+    filters: {field: is_prior_month_mtd value: "yes"}
+
   }
 
   measure: count {
