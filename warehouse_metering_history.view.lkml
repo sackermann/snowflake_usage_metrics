@@ -13,8 +13,13 @@ view: warehouse_metering_history {
       raw,
       time,
       date,
+      day_of_month,
+      day_of_week,
+      day_of_year,
       week,
+      week_of_year,
       month,
+      month_num,
       quarter,
       year
     ]
@@ -27,8 +32,13 @@ view: warehouse_metering_history {
       raw,
       time,
       date,
+      day_of_month,
+      day_of_week,
+      day_of_year,
       week,
+      week_of_year,
       month,
+      month_num,
       quarter,
       year
     ]
